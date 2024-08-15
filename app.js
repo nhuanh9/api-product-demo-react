@@ -28,6 +28,8 @@ const products = [
     },
 ];
 
+const users = [];
+
 // Lấy danh sách sản phẩm
 app.get("/products", (req, res) => {
     res.json(products);
@@ -83,10 +85,48 @@ app.put("/products/:id", (req, res) => {
     }
 });
 
+// Đăng ký người dùng mới
+app.post("/register", (req, res) => {
+    const user = {
+        id: (new Date()).getTime(),
+        username: req.body.username,
+        password: req.body.password, // Lưu ý: trong thực tế không nên lưu mật khẩu dưới dạng plaintext
+        email: req.body.email,
+    };
+    users.push(user);
+    res.json(user);
+});
+
+// Lấy danh sách người dùng
+app.get("/users", (req, res) => {
+    res.json(users);
+});
+
+// Lấy chi tiết người dùng theo id
+app.get("/users/:id", (req, res) => {
+    const id = +req.params.id;
+    const index = findUserIndex(id);
+    if (index !== -1) {
+        res.json(users[index]);
+    } else {
+        res.status(404).json({ message: 'User not found' });
+    }
+});
+
 // Hàm tìm index của sản phẩm theo id
 function findProductIndex(id) {
     for (let i = 0; i < products.length; i++) {
         if (products[i].id === id) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// Hàm tìm index của người dùng theo id
+function findUserIndex(id) {
+    for (let i = 0; i < users.length; i++) {
+        if (users[i].id === id) {
             return i;
         }
     }
