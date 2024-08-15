@@ -97,6 +97,17 @@ app.post("/register", (req, res) => {
     res.json(user);
 });
 
+// Đăng nhập người dùng
+app.post("/login", (req, res) => {
+    const { username, password } = req.body;
+    const user = users.find(user => user.username === username && user.password === password);
+    if (user) {
+        res.json(user);
+    } else {
+        res.status(401).json({ message: 'Invalid username or password' });
+    }
+});
+
 // Lấy danh sách người dùng
 app.get("/users", (req, res) => {
     res.json(users);
